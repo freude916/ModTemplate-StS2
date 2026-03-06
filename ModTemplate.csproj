@@ -20,6 +20,7 @@
   <PropertyGroup Condition="'$(IsWindows)' == 'true'">
     <SteamRoot Condition="'$(SteamRoot)' == ''">$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)</SteamRoot>
     <SteamLibraryPath Condition="'$(SteamLibraryPath)' == '' and '$(SteamRoot)' != ''">$(SteamRoot)\steamapps</SteamLibraryPath>
+    <Sts2Path Condition="'$(Sts2Path)' == ''">$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">$(Sts2Path)/data_sts2_windows_x86_64</Sts2DataDir>
     <GodotPath Condition="'$(GodotPath)' == ''">C:\megadot\MegaDot_v4.5.1-stable_mono_win64.exe</GodotPath>
   </PropertyGroup>
@@ -27,6 +28,7 @@
   <!-- Linux -->
   <PropertyGroup Condition="'$(IsLinux)' == 'true'">
     <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">$(HOME)/.local/share/Steam/steamapps</SteamLibraryPath>
+    <Sts2Path Condition="'$(Sts2Path)' == ''">$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">$(Sts2Path)/data_sts2_linuxbsd_x86_64</Sts2DataDir>
     <GodotPath Condition="'$(GodotPath)' == ''">$(SteamLibraryPath)/common/Godot Engine/godot.x11.opt.tools.64</GodotPath>
   </PropertyGroup>
@@ -35,14 +37,11 @@
   <!-- macOS // TODO -->
   <PropertyGroup Condition="'$(IsOSX)' == 'true'">
     <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">$(HOME)/Library/Application Support/Steam/steamapps</SteamLibraryPath>
+    <Sts2Path Condition="'$(Sts2Path)' == ''">$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">$(Sts2Path)/data_sts2_macos_x86_64</Sts2DataDir>
     <GodotPath Condition="'$(GodotPath)' == ''"></GodotPath>
   </PropertyGroup>
 
-  <!-- Common -->
-  <PropertyGroup>
-    <Sts2Path Condition="'$(Sts2Path)' == ''">$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
-  </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="0Harmony">
