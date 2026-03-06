@@ -9,6 +9,15 @@
         "type": "project"
     },
     "sourceName": "ModTemplate",
+    "sources": [
+        {
+            "exclude":[
+                ".git/**",
+                ".godot/**",
+                ".idea/**"
+            ]
+        }
+    ],
     "symbols": {
         "ModAuthor":{
             "type": "parameter",
@@ -26,9 +35,20 @@
         },
         "NullableChecks":{
             "type": "parameter",
-            "dataType":"bool",
+            "dataType":"choice",
             "defaultValue": "false",
-            "replaces": "NullableChecks"
+            "replaces": "NullableChecks",
+            "enableQuotelessLiterals": true,
+            "choices": [
+                {
+                    "choice": "enable",
+                    "description": "More strict handling of possibly null values."
+                },
+                {
+                    "choice": "disable",
+                    "description": ""
+                }
+            ]
         }
     }
 }
