@@ -15,3 +15,6 @@ and press F4 to open it in Rider. In Visual Studio you should be able to open th
 Right click the project and choose "Publish". Publish options can be left as default. This project is set up for Publish to compile your code and also the Godot .pck, then copy these files to the Slay the Spire 2 mods folder.
 
 If you only make code changes, you can Build instead. This will only generate your code `.dll` and copy it over to the mods folder, but not the `.pck`.
+
+
+You can find a WIP character mod using BaseLib [here](https://github.com/Alchyr/Oddmelt)
