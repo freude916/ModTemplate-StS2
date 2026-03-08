@@ -37,7 +37,7 @@
         "NullableChecks":{
             "type": "parameter",
             "dataType":"choice",
-            "defaultValue": "false",
+            "defaultValue": "enable",
             "replaces": "NullableChecks",
             "enableQuotelessLiterals": true,
             "choices": [
