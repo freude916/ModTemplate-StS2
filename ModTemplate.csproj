@@ -2,9 +2,12 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>true</ImplicitUsings>
-        <Nullable>NullableChecks</Nullable> <!--Makes code analysis regarding null values stricter.-->
+        <Nullable>enable</Nullable> <!--Makes code analysis regarding null values stricter.-->
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefaultItemExcludes>packages\**</DefaultItemExcludes>
+        <DefaultItemExcludes>packages/**</DefaultItemExcludes>
+        <!-- Run code style analysis on build can make Rider and dotnet build check consistent, useful for vibe coding -->
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <AnalysisLevel>latest-all</AnalysisLevel>
     </PropertyGroup>
 
     <!-- OS Detection -->
@@ -19,7 +22,7 @@
 
     <!-- Windows -->
     <PropertyGroup Condition="'$(IsWindows)' == 'true'">
-        <AutoSteamPath>$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steamapps</AutoSteamPath>
+        <AutoSteamPath>$(registry:HKEY_CURRENT_USER/Software/Valve/Steam@SteamPath)/steamapps</AutoSteamPath>
         <SteamLibraryPath Condition="'$(SteamLibraryPath)' == '' and Exists('$(AutoSteamPath)/common/Slay the Spire 2')">$(AutoSteamPath)</SteamLibraryPath>
         <!-- If on Windows and Slay the Spire 2 is not installed in your default steam library, adjust the following.-->
         <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">C:/Program Files (x86)/Steam/steamapps</SteamLibraryPath>
@@ -36,6 +39,7 @@
         <GodotPath Condition="'$(GodotPath)' == ''">$(SteamLibraryPath)/common/Godot Engine/godot.x11.opt.tools.64</GodotPath>
     </PropertyGroup>
     <!-- // NOTE: Megadot is version 4.5.1, and the game won't load pck if godot is newer. -->
+    <!-- // maybe install megadot yourself and specify the path. -->
 
     <!-- macOS // TODO -->
     <PropertyGroup Condition="'$(IsOSX)' == 'true'">
@@ -45,6 +49,13 @@
         <GodotPath Condition="'$(GodotPath)' == ''">$(HOME)/</GodotPath>
     </PropertyGroup>
 
+    
+    <PropertyGroup>
+        <!-- Publish to mods folder more directly -->
+        <!-- <PublishDir>$(Sts2Path)/mods/$(MSBuildProjectName)/</PublishDir>-->
+        <!-- don't copy dll dependencies to build folder to reduce project size -->
+        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
 
     <ItemGroup>
         <Reference Include="0Harmony">
@@ -57,25 +68,29 @@
 
         <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" />
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*" />
-        <AdditionalFiles Include="ModTemplate\localization\**\*.json"/>
+        <AdditionalFiles Include="ModTemplate/localization/**/*.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="ModTemplate\**" />
-        <Compile Remove="materials\**" />
-        <Compile Remove="shaders\**" />
-        <Compile Remove="images\**" />
-        <EmbeddedResource Remove="ModTemplate\**" />
-        <EmbeddedResource Remove="materials\**" />
-        <EmbeddedResource Remove="shaders\**" />
-        <EmbeddedResource Remove="images\**" />
+        <Compile Remove="ModTemplate/**" />
+        <Compile Remove="materials/**" />
+        <Compile Remove="shaders/**" />
+        <Compile Remove="images/**" />
+        <Compile Remove="codebase/**" />
+        <EmbeddedResource Remove="ModTemplate/**" />
+        <EmbeddedResource Remove="materials/**" />
+        <EmbeddedResource Remove="shaders/**" />
+        <EmbeddedResource Remove="images/**" />
+        <EmbeddedResource Remove="codebase/**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include=".gitignore" />
-        <None Include="mod_manifest.json" />
-        <None Include="project.godot"/>
-        <None Include="ModTemplate\**" />
+        <Content Include=".gitignore" />
+        <Content Include="localization/**" />
+        <Content Include="mod_manifest.json" />
+        <Content Include="project.godot" />
+        <Content Include="ModTemplate/**" />
+        <Content Include="README.md" />
     </ItemGroup>
 
     <ItemGroup>
@@ -87,17 +102,17 @@
 
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
         <Message Text="Copying .dll to mods folder." Importance="high" />
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(Sts2Path)/mods/" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(Sts2Path)/mods/$(MSBuildProjectName)/" />
         <Message Text="Copying BaseLib to mods folder." Importance="high" />
         <ItemGroup>
             <BaseLibFiles Include="packages/alchyr.sts2.baselib/**/lib/**/BaseLib.dll;packages/alchyr.sts2.baselib/**/Content/BaseLib.pck"/>
         </ItemGroup>
-        <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(Sts2Path)\mods\" />
+        <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(Sts2Path)/mods/" />
     </Target>
 
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
         <Message Text="Exporting Godot .pck to mods folder" Importance="high"/>
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(Sts2Path)/mods/$(MSBuildProjectName).pck&quot;"
+        <Exec Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(Sts2Path)/mods/$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
               EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
               ContinueOnError="WarnAndContinue"/>
     </Target>
